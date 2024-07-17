@@ -1,4 +1,4 @@
-const imageUrls = [
+let imageUrls = [
   "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?q=80&w=2671&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   "https://images.unsplash.com/photo-1721137287642-43b251bd6f00?q=80&w=2672&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   "https://images.unsplash.com/photo-1721112796760-fe228d1e22a8?q=80&w=2564&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -8,9 +8,14 @@ const imageUrls = [
   "https://images.unsplash.com/photo-1721102825235-3ec07d8d0cab?q=80&w=2532&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 ];
 
-const defaultBackground = imageUrls[Math.floor(Math.random() * imageUrls.length)];
+const defaultBackground =
+  imageUrls[Math.floor(Math.random() * imageUrls.length)];
 
-setInterval(() => SetBackgroundImage(imageUrls[Math.floor(Math.random() * imageUrls.length)]), 3600000)
+setInterval(
+  () =>
+    SetBackgroundImage(imageUrls[Math.floor(Math.random() * imageUrls.length)]),
+  3600000
+);
 
 const ReplaceAllDataBackground = () => {
   Array.from(document.querySelectorAll("div[data-background]")).forEach(
@@ -21,24 +26,25 @@ const ReplaceAllDataBackground = () => {
   );
 };
 
-const SetupBackgroundSelector = () => {
+const CreateImageOptionTile = (url) => {
   const container = document.querySelector(".infinite-row");
+  const div = document.createElement("div");
+  div.setAttribute("data-background", url);
 
-  imageUrls.forEach((url) => {
-    const div = document.createElement("div");
-    div.setAttribute("data-background", url);
-    container.appendChild(div);
+  div.addEventListener("click", () => {
+    SetBackgroundImage(div.getAttribute("data-background"));
   });
-  
-  Array.from($(".infinite-row > div")).forEach((option) => {
-    option.addEventListener("click", () => {
-      SetBackgroundImage(option.getAttribute("data-background"));
-    });
+  container.appendChild(div);
+};
+
+const SetupBackgroundSelector = () => {
+  imageUrls.forEach((url) => {
+    CreateImageOptionTile(url);
   });
 };
 
 const SetBackgroundImage = (background) => {
-  document.getElementById("background-image").value = background;
+  document.getElementById("background-image").placeholder = background;
   let appContent = document.querySelector(".app-content");
 
   appContent.style.backgroundImage = `url('${background}')`;
@@ -50,19 +56,41 @@ const SetBackgroundImage = (background) => {
 
 const SetupBackground = () => {
   SetBackgroundImage(defaultBackground);
+};
 
-  document.getElementById("background-image").addEventListener("keyup", () => {
+const AddImageToOptions = (newImage) => {
+  imageUrls.push(newImage);
+  CreateImageOptionTile(newImage);
+  ReplaceAllDataBackground();
+  window.localStorage.setItem("image-options", JSON.stringify(imageUrls));
+};
+
+const SetupImageOptions = () => {
+  let imageOptions = window.localStorage.getItem("image-options");
+
+  if (imageOptions != null && imageOptions != "") {
+    imageOptions = JSON.parse(imageOptions);
+
+    if (imageOptions != null && imageOptions.length > 0) {
+      imageUrls = imageOptions;
+    }
+  }
+};
+
+$(document).ready(function () {
+  SetupImageOptions();
+  SetupBackground();
+  SetupBackgroundSelector();
+  ReplaceAllDataBackground();
+
+  document.querySelector("#addImageToImages").addEventListener("click", () => {
     let value = document.getElementById("background-image").value;
     SetBackgroundImage(
       value == "" || value == null ? defaultBackground : value
     );
-  });
-};
 
-$(document).ready(function () {
-  SetupBackground();
-  SetupBackgroundSelector();
-  ReplaceAllDataBackground();
+    AddImageToOptions(value);
+  });
 
   // Everything below here is from:
   //    https://codepen.io/putraaryotama/pen/wgwqBB
