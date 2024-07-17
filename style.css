@@ -1,0 +1,162 @@
+.app-content {
+  position: relative;
+  width: 100vw!important;  
+  height: 100vh;
+  margin: 0 auto;
+}
+
+.pomodoro {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  padding: 2rem;
+  background-color: whitesmoke;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 2px solid grey;
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+}
+
+p {
+  text-align: center;
+}
+
+.flip-clock-wrapper {
+  max-width: 460px;
+  margin: 3em auto 2em;
+  display: flex;
+  justify-content: center;
+}
+
+.col-md-4 {
+  display: flex;
+  justify-content: center;
+}
+
+.col-md-2 {
+  display: flex;
+  justify-content: center;
+  height: 34px;
+  align-items: center;
+}
+
+.counter {
+  display: flex;
+  justify-content: center;
+}
+
+.clock {
+  margin-top: 30px;
+}
+
+.container {
+  width: 500px;
+}
+
+.middle {
+  display: inline-block;
+}
+
+#btns {
+  display: flex;
+  justify-content: center;
+}
+
+#stop {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.btn {
+  background-color: #333333;
+  color: #CCCCCC;
+}
+
+#sessInc, #sessDec, #breakInc, #breakDec {
+  font-weight: bold;
+}
+
+#statRow {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.side-nav {
+  position: absolute;
+  width: 400px;
+  height: 100vh;
+  right: 0;
+  top: 0;
+  background-color: whitesmoke;
+}
+.side-nav .toggle-tag {
+  width: 100px;
+  height: 100px;
+  background-color: whitesmoke;
+  position: absolute;
+  left: -99px;
+  top: 50px;
+  border: 0px;
+  outline: none;
+  box-shadow: none;
+}
+.side-nav .toggle-tag ~ input[type=checkbox] {
+  display: none;
+}
+
+.p-3 { 
+padding: 1rem 2rem;
+}
+
+
+.infinite-row {
+  display: flex;
+  min-width: 100%;
+  width: auto;
+  max-width: 1000000px;
+  overflow: hidden;
+  overflow-x: scroll;
+  gap: 5px;
+  border-radius: 1rem;
+}
+
+.infinite-row div {
+  width: 100px;
+  height: 100px;
+  min-width: 100px!important;
+  aspect-ratio: 1/1;
+  border-radius: 1rem;
+  
+  background-color: grey;
+  
+  background-image: attr(data-background);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+}
+
+.infinite-row div:hover {
+  opacity: .75;
+  cursor: pointer;
+}
+
+.credit {
+  padding: 1rem 2rem;
+  padding-top: calc(1rem + 2px);
+  background-color: white;
+  
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  
+  border-radius: 9999px;
+  border: 2px solid grey;
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
