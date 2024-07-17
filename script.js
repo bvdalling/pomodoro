@@ -8,28 +8,6 @@ const imageUrls = [
   "https://images.unsplash.com/photo-1721102825235-3ec07d8d0cab?q=80&w=2532&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 ];
 
-// Function to generate a random number between min and max (inclusive)
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-// Function to simulate pixel giggling
-function pixelGiggler() {
-  // Define the elements or areas of your display to be affected
-  // Here, we're using a simple example where we change text content
-  // Replace this with your actual display update logic
-  let elements = document.querySelectorAll('body > div');
-
-  elements.forEach(element => {
-    // Generate random content or random changes
-    let randomContent = getRandomInt(1, 1000); // Example: Generate a random number
-    element.textContent = randomContent;
-  });
-}
-
-// Call pixelGiggler function periodically
-setInterval(pixelGiggler, 5000); // Adjust the interval (in milliseconds) as needed
-
 const defaultBackground = imageUrls[Math.floor(Math.random() * imageUrls.length)];
 
 setInterval(() => SetBackgroundImage(imageUrls[Math.floor(Math.random() * imageUrls.length)]), 3600000)
