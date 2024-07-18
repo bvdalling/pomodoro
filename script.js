@@ -8,14 +8,12 @@ let imageUrls = [
   "https://images.unsplash.com/photo-1721102825235-3ec07d8d0cab?q=80&w=2532&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 ];
 
+let activeImage = "";
+
 const defaultBackground =
   imageUrls[Math.floor(Math.random() * imageUrls.length)];
 
-setInterval(
-  () =>
-    SetBackgroundImage(imageUrls[Math.floor(Math.random() * imageUrls.length)]),
-  3600000
-);
+setInterval(() => SetRandomBackground(), 3600000);
 
 const ReplaceAllDataBackground = () => {
   Array.from(document.querySelectorAll("div[data-background]")).forEach(
@@ -44,6 +42,7 @@ const SetupBackgroundSelector = () => {
 };
 
 const SetBackgroundImage = (background) => {
+  activeImage = background;
   document.getElementById("background-image").placeholder = background;
   let appContent = document.querySelector(".app-content");
 
@@ -52,6 +51,10 @@ const SetBackgroundImage = (background) => {
   appContent.style.backgroundPosition = "center center";
   appContent.style.backgroundAttachment = "fixed";
   appContent.style.backgroundSize = "cover";
+};
+
+const SetRandomBackground = () => {
+  SetBackgroundImage(imageUrls[Math.floor(Math.random() * imageUrls.length)]);
 };
 
 const SetupBackground = () => {
@@ -77,11 +80,94 @@ const SetupImageOptions = () => {
   }
 };
 
+const PruneBackgroundOptionTiles = () => {
+  let options = document.querySelectorAll(".infinite-row > div")
+  
+  Array.from(options).forEach(option => {
+    let backgroundValue = option.getAttribute("data-background")
+    
+    if (!imageUrls.includes(backgroundValue)) {
+      option.remove()
+    }
+  })
+}
+
+document.getElementById('import-settings').addEventListener('click', function() {
+  document.getElementById('file-input').click();
+});
+
+document.getElementById('file-input').addEventListener('change', function(event) {
+  let file = event.target.files[0];
+
+  if (!file) {
+    return;
+  }
+
+  let reader = new FileReader();
+
+  reader.onload = function(e) {
+    try {
+      let content = e.target.result;
+      let importedSettings = JSON.parse(content);
+
+      applySettings(importedSettings);
+
+      alert('Settings imported successfully!');
+    } catch (error) {
+      alert('Error importing settings: ' + error.message);
+    }
+  };
+
+  reader.readAsText(file);
+});
+
+function applySettings(settings) {
+  console.log('Applying settings:', settings);
+  
+  imageUrls = settings.images
+  window.localStorage.setItem("image-options", JSON.stringify(imageUrls));
+  SetupImageOptions();
+  SetupBackground();
+  SetupBackgroundSelector();
+  ReplaceAllDataBackground();
+}
+
+
+const DownloadObject = (exportObject, fileName) => {
+  let link = document.createElement('a');
+  let url = URL.createObjectURL(new Blob([JSON.stringify(exportObject)], { type: 'application/json' }))
+  
+  link.href = url;
+  link.download = fileName;
+  link.click();
+  link.remove();
+
+  URL.revokeObjectURL(url);
+}
+
 $(document).ready(function () {
   SetupImageOptions();
   SetupBackground();
   SetupBackgroundSelector();
   ReplaceAllDataBackground();
+
+  document
+    .querySelector("#remove-current-background")
+    .addEventListener("click", () => {
+      imageUrls = imageUrls.filter((url) => url != activeImage);
+      SetRandomBackground()
+      PruneBackgroundOptionTiles()
+      window.localStorage.setItem("image-options", JSON.stringify(imageUrls));
+    });
+  
+  document.querySelector("#export-settings")
+  .addEventListener("click", () => {
+      let exportObject = {
+        images: imageUrls
+      }
+      
+      DownloadObject(exportObject, "simple-pomodoro-settings-export.json")
+    });
 
   document.querySelector("#addImageToImages").addEventListener("click", () => {
     let value = document.getElementById("background-image").value;
