@@ -125,11 +125,13 @@ function applySettings(settings) {
   console.log('Applying settings:', settings);
   
   imageUrls = settings.images
+
   window.localStorage.setItem("image-options", JSON.stringify(imageUrls));
   SetupImageOptions();
   SetupBackground();
   SetupBackgroundSelector();
   ReplaceAllDataBackground();
+  SetBackgroundImage(settings.activeImage);
 }
 
 
@@ -163,7 +165,8 @@ $(document).ready(function () {
   document.querySelector("#export-settings")
   .addEventListener("click", () => {
       let exportObject = {
-        images: imageUrls
+        images: imageUrls,
+        activeImage: activeImage
       }
       
       DownloadObject(exportObject, "simple-pomodoro-settings-export.json")
@@ -179,83 +182,91 @@ $(document).ready(function () {
   });
 
   // Everything below here is from:
-  //    https://codepen.io/putraaryotama/pen/wgwqBB
-
+  //    https://codepen.io/putraaryotama/pen/wgwqBB$(document).ready(function(){
   var countS = 25;
   $("#session").html(countS);
   var countB = 5;
   $("#break").html(countB);
+  var pos = "pomodoro";
   var countLama;
   var posLama;
   var count;
+  $("#stats").html(pos);
   var clock = $(".timer").FlipClock(0, {
     countdown: true,
-    clockFace: "MinuteCounter",
+    clockFace: 'MinuteCounter',
     autoStart: false,
     callbacks: {
-      interval: function () {
-        if (clock.getTime() == 0) {
-          if (pos == "session") {
-            clock.setTime(countB * 60);
+      interval: function(){
+        if (clock.getTime() == 0){
+          if (pos == "session"){
+            clock.setTime(countB*60);
             clock.start();
-          } else if (pos == "break") {
-            clock.setTime(countS * 60);
+            pos = "break";
+            $("#stats").html(pos);
+          } else if (pos == "break"){
+            clock.setTime(countS*60);
             clock.start();
+            pos = "session";
+            $("#stats").html(pos);
           }
-        }
+        }        
       }
     }
-  });
+  })  
   //SESSION
-  $("#sessInc").on("click", function () {
-    if ($("#session").html() > 0) {
+  $("#sessInc").on("click", function(){
+    if ($("#session").html() > 0){
       countS = parseInt($("#session").html());
-      countS += 1;
+      countS+=1;
       $("#session").html(countS);
       //clock.setTime(countS*60);
     }
   });
-  $("#sessDec").on("click", function () {
-    if ($("#session").html() > 1) {
+  $("#sessDec").on("click", function(){
+    if ($("#session").html() > 1){
       countS = parseInt($("#session").html());
-      countS -= 1;
+      countS-=1;
       $("#session").html(countS);
       //clock.setTime(countS*60);
     }
   });
   //BREAK
-  $("#breakInc").on("click", function () {
-    if ($("#break").html() > 0) {
+  $("#breakInc").on("click", function(){
+    if ($("#break").html() > 0){
       countB = parseInt($("#break").html());
-      countB += 1;
+      countB+=1;
+      $("#break").html(countB);
+    }    
+  });
+  $("#breakDec").on("click", function(){
+    if ($("#break").html() > 1){
+      countB = parseInt($("#break").html());
+      countB-=1;
       $("#break").html(countB);
     }
-  });
-  $("#breakDec").on("click", function () {
-    if ($("#break").html() > 1) {
-      countB = parseInt($("#break").html());
-      countB -= 1;
-      $("#break").html(countB);
-    }
-  });
-  $("#start").on("click", function () {
-    if (count != countS || clock.getTime() == 0) {
-      clock.setTime(countS * 60);
-      pos = "session";
+  });  
+  $("#start").on("click", function(){
+    if (count != countS || clock.getTime()==0){
+      clock.setTime(countS*60);
+      pos="session";
+      $("#stats").html(pos);
     } else {
       pos = posLama;
+      $("#stats").html(pos);
     }
-    count = countS;
-    clock.start();
+    count = countS;    
+    clock.start();    
   });
-  $("#stop").on("click", function () {
+  $("#stop").on("click", function(){
     clock.stop();
     countLama = clock.getTime();
     posLama = $("#stats").html();
   });
-  $("#clear").on("click", function () {
+  $("#clear").on("click", function(){
     clock.stop();
     pos = "pomodoro";
+    $("#stats").html(pos);
     clock.setTime(0);
   });
 });
